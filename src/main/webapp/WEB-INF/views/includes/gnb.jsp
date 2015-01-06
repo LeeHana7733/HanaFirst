@@ -43,7 +43,7 @@
 					<div class="col-sm-4"><button type="button" class="btn btn-default detail">세부분류별</button></div>
 				</c:when>
 				<c:otherwise>
-					<div class="col-sm-4"><button type="button" class="btn btn-default budgetType" >주별 예산</button></div>
+					<div class="col-sm-4"><button type="button" class="btn btn-default budgetType"  data-type="W">주별 예산</button></div>
 					<div class="col-sm-4"><button type="button" class="btn btn-default  amountMoney">금액 표시</button></div>
 					<div class="col-sm-4"><button type="button" class="btn btn-default amount">가능액 표시</button></div>
 				</c:otherwise>

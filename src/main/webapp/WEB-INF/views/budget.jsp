@@ -8,8 +8,8 @@ $(document).ready(function(){
 	$("body").attr("style","padding-top:120px;position:relative;");
 	$("#full_date").text("${totalInfo.START_DATE} ~ ${totalInfo.END_DATE}").attr("class" , "col-sm-3")
 	.data("today" , "${totalInfo.TO_DAY}")
-					.data("start" ,"${data.totalInfo.START_DATE}")
-					.data("end" , "${data.totalInfo.END_DATE}");
+	.data("start" ,"${totalInfo.START_DATE}")
+	.data("end" , "${totalInfo.END_DATE}");
 	$(document).on({
 		click : function(){
 			var hasClass	= $(this).children('span').attr('class');
