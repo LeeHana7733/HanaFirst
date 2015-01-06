@@ -4,7 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %> 
 <header class="navbar navbar-inverse navbar-fixed-top bs-docs-nav" role="banner">
 	<div class="container">
-		<ul class="nav nav-tabs">
+		<ul class="nav nav-tabs"> 
 			<li><a href="/">지출내역</a></li>
 			<li><a href="/inPay">수입내역</a></li>
 			<li><a href="/budget">예산관리</a></li>
