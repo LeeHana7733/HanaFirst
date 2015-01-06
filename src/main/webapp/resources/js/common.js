@@ -2,7 +2,6 @@ $(document).ready(function(){
 	$.ajaxSetup({
 		async: false
 	});
-	var tab	=  $(".nav-tabs").find(".active > a").attr("href") ;
 	$.getHistInfo = function (value ,option,type) {
 		$.post("/"+type+"/"+value, 
 				{
@@ -249,7 +248,9 @@ $(document).ready(function(){
 					dt.setMonth(dt.getMonth()-1);
 				}
 				$('#full_date').text($.datepicker.formatDate('yy-mm-dd' , dt));
-				tab  == "/" ? $.getHistList() : $.getInHistList();
+				tabVal	=   $(".nav-tabs").find(".active > a").attr("href") ;
+				console.log(tabVal);
+				tabVal  == "/" ? $.getHistList() : $.getInHistList();
 			}
 		}
 	} , ".row div > .glyphicon");
