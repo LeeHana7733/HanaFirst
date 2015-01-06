@@ -23,16 +23,16 @@
 	</select>
 	<select id="budgetList" parameterType="hashMap" resultType="hashMap">
 		SELECT	OID,
-			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(BUD_AMOUNT,'999,999,999') || '원' )  AS BUD_AMOUNT,
+			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(BUD_AMOUNT,'999,999,999,999,999,9999') || '원' )  AS BUD_AMOUNT,
 			       	BUD_DATE,
 			       	CATE_OID,
 			       	CATE_NAME,
 			       	BUD_TYPE,
-			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(FAIR_VALUE , '999,999,999') || '원' ) AS FAIR_VALUE,
-			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(SUM_AMOUNT , '999,999,999') || '원')  AS SUM_AMOUNT,
+			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(FAIR_VALUE , '999,999,999,999,999,9999') || '원' ) AS FAIR_VALUE,
+			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(SUM_AMOUNT , '999,999,999,999,999,9999') || '원')  AS SUM_AMOUNT,
 			       	D_DAY,
-			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(NVL(BUD_AMOUNT - SUM_AMOUNT , 0 ) , '999,999,999' )|| '원')  AS REM_AMOUNT,
-			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(NVL(TRUNC((BUD_AMOUNT - SUM_AMOUNT)/D_DAY),0) , '999,999,999')|| '원') AS AVG_VALUE,
+			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(NVL(BUD_AMOUNT - SUM_AMOUNT , 0 ) , '999,999,999,999,999,9999' )|| '원')  AS REM_AMOUNT,
+			       	DECODE(BUD_AMOUNT , 0 , '예산 미입력' , TO_CHAR(NVL(TRUNC((BUD_AMOUNT - SUM_AMOUNT)/D_DAY),0) , '999,999,999,999,999,9999')|| '원') AS AVG_VALUE,
 			       	CEIL(NVL(SUM_AMOUNT/DECODE(BUD_AMOUNT*100 , 0  , NULL , BUD_AMOUNT*100) , 0 ) ) AS AVG_PROCESS
 		FROM 	(			       	
 						SELECT	A.OID,
