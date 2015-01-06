@@ -85,6 +85,7 @@
 									if ($("#alertModal > div > div>.modal-footer").length == 0 )
 										$("#alertModal > div > div").append("<div class=\"modal-footer center\" >"+alertFooterEl+"</div>");
 									$.getHistInfo(dateVal ,$("button[data-date='"+ dateVal + "']").closest(".row").next().children().first() , "date");	
+									console.log(dateVal);
 									$("button[data-date='"+ dateVal + "']").parent().next().children().children().text($.number(data.totalInfo.DATETOTAL) + "원");
 									$(".row.all").children().last().text($.number(data.totalInfo.MONTHTOTAL) + "원");
 								},

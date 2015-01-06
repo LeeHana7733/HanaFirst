@@ -39,6 +39,7 @@ public class MainController {
 	public ModelAndView mergeHist(HistoryVO hist){
 		ModelAndView mav	= new ModelAndView();
 		mav.addObject("result"	, expendService.mergeHistory(hist) );
+		mav.addObject("totalInfo"	, expendService.totalAmount(hist) );
 		mav.setViewName("jsonView");
 		return mav;
 	}
