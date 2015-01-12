@@ -1,8 +1,8 @@
 <%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8"%>
 <%@ include file="/WEB-INF/views/includes/header.jsp" %>
 	<script type="text/javascript">
-	var timer;
-	var subTimer;
+		var timer;
+		var subTimer;
 		$(document).ready(function(){
 			$("li:eq(0)").addClass("active");
 			$("input[name='paymentType']").val("0");
@@ -85,7 +85,6 @@
 									if ($("#alertModal > div > div>.modal-footer").length == 0 )
 										$("#alertModal > div > div").append("<div class=\"modal-footer center\" >"+alertFooterEl+"</div>");
 									$.getHistInfo(dateVal ,$("button[data-date='"+ dateVal + "']").closest(".row").next().children().first() , "date");	
-									console.log(dateVal);
 									$("button[data-date='"+ dateVal + "']").parent().next().children().children().text($.number(data.totalInfo.DATETOTAL) + "원");
 									$(".row.all").children().last().text($.number(data.totalInfo.MONTHTOTAL) + "원");
 								},

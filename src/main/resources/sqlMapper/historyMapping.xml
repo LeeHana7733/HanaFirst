@@ -175,10 +175,10 @@
 												</choose>
 											</where>
 											<if test="paymentType != '0'.toString()">
-												AND	B.SPD_PAYMENT		= #{paymentType}
+												AND	SPD_PAYMENT		= #{paymentType}
 											</if>
 											<if test="cateType != '0'.toString()">
-												AND	B.SPD_CATEGORY	=	#{cateType} 
+												AND	SPD_CATEGORY	=	#{cateType} 
 											</if>
 		                					
 		                				)

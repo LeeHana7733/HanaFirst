@@ -3,7 +3,7 @@
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$(".navbar").children().last().remove();
-			$("body").attr("style","padding-top:85px;position: relative;");
+			$("body").attr("style","padding-top:160px;position: relative;");
 			$("li:eq(1)").addClass("active");
 			var InPay	=	Modal.InPay;
 			var subTimer		=null	;

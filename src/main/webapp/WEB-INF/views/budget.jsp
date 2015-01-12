@@ -5,8 +5,9 @@ $(document).ready(function(){
 	$("li:eq(2)").addClass("active");
 	$(".glyphicon-search").hide();
 	$(".col-sm-offset-2").hide();
-	$("body").attr("style","padding-top:120px;position:relative;");
-	$("#full_date").text("${totalInfo.START_DATE} ~ ${totalInfo.END_DATE}").attr("class" , "col-sm-3")
+	$("body").attr("style","padding-top:190px;position:relative;");
+	$(".pager.date").parent().attr("class" , "col-sm-12");
+	$("#full_date").text("${totalInfo.START_DATE} ~ ${totalInfo.END_DATE}")
 	.data("today" , "${totalInfo.TO_DAY}")
 	.data("start" ,"${totalInfo.START_DATE}")
 	.data("end" , "${totalInfo.END_DATE}");
@@ -85,7 +86,6 @@ $(document).ready(function(){
 						},
 						'json'
 				);
-					
 			}else if ($(this).hasClass('cateBud')){
 				
 			}else if ($(this).hasClass('dtlCateBud')){

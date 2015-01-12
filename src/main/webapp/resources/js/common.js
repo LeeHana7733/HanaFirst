@@ -99,7 +99,7 @@ $(document).ready(function(){
 							html	+= "</div></div></div><div class=\"row bottom hide\"><div class=\"col-sm-12\"></div></div></div>";
 						});
 						$(".bs-docs-section").html(html);
-						$(".row.all").children().last().text($.number(data.totalInfo.MONTHTOTAL) + "원");
+						$(".pager.totalAmount>li").text($.number(data.totalInfo.MONTHTOTAL) + "원");
 					},
 					'json'
 			);
@@ -131,7 +131,7 @@ $(document).ready(function(){
 							html	+= "<tr rowspan='4' class='text-center'><td>수입 내역이 없습니다.</td></tr>";
 						}
 						$(".bottomLine").find('tbody').html(html);
-						$(".row.all").children().last().text($.number(data.totalInfo.MONTHTOTAL) + "원");
+						$(".pager.totalAmount>li").text($.number(data.totalInfo.MONTHTOTAL) + "원");
 						$(".bottom").find("tr").children().last().text($.number(data.restAmount) + "원");
 					},
 					'json'
@@ -220,7 +220,7 @@ $(document).ready(function(){
 				var dt 	= new Date($("#full_date").data("today"));
 				if ($.trim($(".budgetType").data("type")) == "")
 					$(".budgetType").data('type' , 'W');
-				if ($(this).hasClass("glyphicon-chevron-right")){
+				if ($(this).hasClass("right")){
 					if ($(".budgetType").data("type") == 'W'){
 						dt.setDate(dt.getDate() + 7);
 					}else if ($(".budgetType").data("type") == 'M'){
@@ -240,20 +240,19 @@ $(document).ready(function(){
 				var dataP	= {'budDate' : $.datepicker.formatDate('yy-mm-dd' , dt) , 'budType' : $(".budgetType").data('type')};
 				$.budgetList(dataP);
 			}else{
-				var dt 	= new Date($('#full_date').text());
+				var dt 	= new Date( $('#full_date').text());
 				dt.setDate(1);
-				if ($(this).hasClass("glyphicon-chevron-right")){
+				if ($(this).hasClass("right")){
 					dt.setMonth(dt.getMonth()+1);
 				}else{
 					dt.setMonth(dt.getMonth()-1);
 				}
 				$('#full_date').text($.datepicker.formatDate('yy-mm-dd' , dt));
 				tabVal	=   $(".nav-tabs").find(".active > a").attr("href") ;
-				console.log(tabVal);
 				tabVal  == "/" ? $.getHistList() : $.getInHistList();
 			}
 		}
-	} , ".row div > .glyphicon");
+	} , ".date>li>.btn");
 	
 	
 	$.dateMulti	= function ($sdate , $edate) {
@@ -270,8 +269,7 @@ $(document).ready(function(){
 		edate.datepicker("option", "onClose", function ( selectedDate ) {
 			sdate.datepicker( "option", "maxDate", selectedDate );
 		});
-	}
-	
+	};
 	
 	var OptionData	= function(option){
 		this.type		= option.type  	|| "text";
@@ -328,8 +326,6 @@ $(document).ready(function(){
 							html	+=	"<button type=\"button\" class=\"btn btn-default btn-block btn-"+optionData.className+"\">"+name+"</button>";
 						}
 					});
-					console.log("id======" + $("#myModal").data("id"));
-					console.log("spdtype======" +$("#myModal").data("spdtype") );
 					html	+= "<input type=\"hidden\" name=\"oid\" value=\""+$("#myModal").data("id")+"\" >"; 
 					html	+= "<input type=\"hidden\" name=\"spdType\" value=\""+$("#myModal").data("spdtype")+"\" >"; 
 				});
@@ -375,12 +371,13 @@ $(document).ready(function(){
 					.data("start" , data.totalInfo.START_DATE)
 					.data("end" , data.totalInfo.END_DATE);
 					$(".main").children().remove();
+					alert (data.budgetList.length);
 					if (data.budgetList.length > 0){
 						$.each(data.budgetList, function ( i ,val){
 							$(".main").htmlAppend(val);
 						});
 					}else{
-						$(".main").append('	<p><table class="table table-hover bottomLine">'+
+						$(".row.main").append('	<p><table class="table table-hover bottomLine">'+
 								'<tbody>'+
 									'<tr class="text-center">'+
 										'<td>메뉴를 눌러 예산을 추가해 주세요.</td>'+
@@ -427,5 +424,5 @@ $(document).ready(function(){
 						'</tr>'+
 					'</tbody>'+
 				'</table>');
-	}
+	};
 });

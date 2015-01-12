@@ -10,7 +10,8 @@ public class BaseStatsController {
 	@RequestMapping(value="/baseStats")
 	public ModelAndView baseStatsView(){
 		ModelAndView mav	= new ModelAndView("baseStats");
-		mav.addObject("title", "자동통계");
+		mav.addObject("title", "자료통계");
+		
 		
 		return mav;
 		
