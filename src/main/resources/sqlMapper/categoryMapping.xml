@@ -8,7 +8,7 @@
 					CATE_NAME
 		FROM		AC_CATEGORY
 		WHERE 	CATE_TYPE 	= #{cateType}
-		<if test="cateOid !=  ''.toString() and cateOid != null ">
+		<if test="cateType == 'PD' ">
 				AND	PARENT_CATE_ID = #{cateOid}
 		</if>
 	</select>
@@ -28,7 +28,8 @@
 				CATE_NAME	,
 				CATE_TYPE	,
 				CATE_UPDATE_DATE,
-				CATE_CREATE_DATE			
+				CATE_CREATE_DATE,
+				PARENT_CATE_ID			
 			)
 			VALUES
 			(
@@ -37,7 +38,8 @@
 				#{cateName},
 				'Y',
 				SYSDATE,
-				SYSDATE
+				SYSDATE,
+				#{prentCateID}
 			)
 	</update>
 	

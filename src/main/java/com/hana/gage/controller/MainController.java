@@ -1,12 +1,12 @@
 package com.hana.gage.controller;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.hana.gage.domain.HistoryVO;
@@ -28,6 +28,7 @@ public class MainController {
 		ModelAndView mav	= new ModelAndView("index");
 		mav.addObject("totalInfo" , expendService.totalAmount(hist));
 		mav.addObject("totalDate" , expendService.histList(hist));
+		mav.addObject("title" , "지출내역");
 		return mav;
 	}
 	/**
@@ -36,9 +37,18 @@ public class MainController {
 	 * @return ModelAndView mav
 	 */
 	@RequestMapping(value="/mergeHist" ,  produces="text/plain; charset=UTF-8")
-	public ModelAndView mergeHist(HistoryVO hist){
+	public ModelAndView mergeHist(HistoryVO hist,
+											@RequestParam(value="spdCategoryP" , required=false) String spdCategoryP,
+											@RequestParam(value="spdSubCategoryP", required=false) String spdSubCategoryP,
+											@RequestParam(value="spdPaymentP", required=false) String spdPaymentP
+			){
 		ModelAndView mav	= new ModelAndView();
 		mav.addObject("result"	, expendService.mergeHistory(hist) );
+		if (!"".equals(hist.getOid().trim()) ){
+			hist.setSpdCategory(spdCategoryP);
+			hist.setSpdPayment(spdPaymentP);
+			hist.setSpdSubCategory(spdSubCategoryP);
+		}
 		mav.addObject("totalInfo"	, expendService.totalAmount(hist) );
 		mav.setViewName("jsonView");
 		return mav;
@@ -69,8 +79,9 @@ public class MainController {
 		HashMap<String ,String> map	= new HashMap<String ,String>();
 		map.put("type", type);
 		map.put("value", value);
-		map.put("paymentType", hist.getPaymentType());
-		map.put("cateType", hist.getCateType());
+		map.put("spdPayment"	, hist.getSpdPayment());
+		map.put("spdCategory"		, hist.getSpdCategory());
+		map.put("spdSubCategory", hist.getSpdSubCategory());
 		map.put("spdType", hist.getSpdType());
 		
 		ModelAndView mav	= new ModelAndView();

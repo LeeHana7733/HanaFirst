@@ -17,8 +17,8 @@
 					}else if (hasClass.indexOf("pencil") > -1) {
 						var	 footer	= ['취소:btn-default btn-close','즐겨찾기','입력:btn-primary btn-save'];
 						$("#myModal").data("id" , "").modal().myModal(InPay.myModal(footer) , 'IN');
-						$("select[name='spdCategory']").html($.getCateList('select' , 'IN' ,''));
-						$(document).find("input[name=spdDate]").removeClass('hasDatepicker').datepicker(); 
+						$("select[name='spdPayment']").html($.getCateList('select' , 'IN' ,''));
+						$(document).find("input[name=spdDate]").removeClass('hasDatepicker').datepicker().val($("#full_date").text()); 
 					}else{
 						
 					}

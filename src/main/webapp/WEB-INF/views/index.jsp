@@ -5,8 +5,6 @@
 		var subTimer;
 		$(document).ready(function(){
 			$("li:eq(0)").addClass("active");
-			$("input[name='paymentType']").val("0");
-			$("input[name='cateType']").val("0");
 			var alertFooterEl	= $("#alertModal").find(".modal-footer").html();
 			$("#datepicker").datepicker();	
 			/********************************************************************************************************************
@@ -20,8 +18,12 @@
 					timer = setTimeout(function () {
 						$("#myModal").modal();
 						$("form")[0].reset();
-						$("select[name='spdPayment']").html($.getCateList('select' , 'CA' ,''));
-						$("select[name='spdCategory']").html($.getCateList('select' , 'PA' ,''));
+						$("select[name='spdPayment']").html($.getCateList('select' , 'OUT' ,''));
+						$("select[name='spdCategory']").html($.getCateList('select' , 'PA' ,''))
+															  .change(function(){
+																  $("select[name='spdSubCategory']").html($.getCateList('select' , 'PD' , $(this).val()));								
+																});
+						$("select[name='spdSubCategory']").html($.getCateList('select' , 'PD' ,''))
 						$("input[name='oid']").val("");
 						$.inputDisable(false);
 						$("#alertModal").find(".modal-title").text("결과");
@@ -42,7 +44,6 @@
 					clearTimeout(timer);
 				}
 			}, ".col-sm-9 > .input-group > .btn");
-			
 			/********************************************************************************************************************
 			** @	상세정보 Click 날짜
 			** @	마우스를 길게 누르면 메뉴 보여줌
@@ -73,6 +74,10 @@
 				click : function(){
 					if ($(this).hasClass("btn-save")||$(this).hasClass("btn-update")){
 						var dateVal	= $("input[name*='spdDate']").val();
+						$("input[name*='spdCategoryP']").val($(".class").data("id"));
+						$("input[name*='spdSubCategoryP']").val($(".detail").data("id"));
+						$("input[name*='spdPaymentP']").val($(".card").data("id"));
+						$.ajaxSetup({async: false});
 						$.post("/mergeHist" , 
 								$("#modalForm").serialize(),
 								function (data){
@@ -90,6 +95,7 @@
 								},
 								'json'
 						);
+						$.ajaxSetup({async: true});
 					}else{
 						$("#myModal").modal("hide");
 						$.showPaymentPop();
@@ -131,38 +137,43 @@
 						);
 					}else{
 						var btnText	= "카드별";
-						if ($("#alertModal").attr('data-type') == 'card')
-					 		$("input[name='paymentType']").val($(this).attr("data-payment"));
-						else if( $("#alertModal").attr('data-type') == 'class'){
-							$("input[name='cateType']").val($(this).attr("data-payment"));
+						if ($("#alertModal").data('type') == 'card')
+					 		$(".btn.card").data('id',$(this).data("id"));
+						else if( $("#alertModal").data('type') == 'class'){
+							$(".btn.class").data('id',$(this).data("id"));
 							btnText	= "분류별";
 						}else{
-							$("input[name='cateType']").val($(this).attr("data-payment"));
+							$(".btn.detail").data('id',$(this).data("id"));
 							btnText	= "세부분류별";
 						} 
 							
 					 	$.getHistList();
-						$("#alertModal").modal("hide");
-						if ($(this).attr("data-payment") == 0 )  
-							$("."+$("#alertModal").attr("data-type") ).text(btnText);
+						if ($(this).data("id") == 0 )  
+							$("."+$("#alertModal").data("type") ).text(btnText);
 						else
-							$("."+$("#alertModal").attr("data-type") ).text($(this).text());
+							$("."+$("#alertModal").data("type") ).text($(this).text());
+						$("#alertModal").modal("hide");
 					}
 				}
 			} , "#alertModal > div > div> .modal-body> .btn.btn-default");
 			
-			
 			$(document).on({
 				click : function(){
 					if ($(this).hasClass("card")){
-						$.showClassPop("카드 상세 분류" , 'CA');
-						$("#alertModal").attr("data-type" , 'card');
+						$.showClassPop("카드 상세 분류" , 'OUT');
+						$("#alertModal").data('type' , 'card' ) ;
 					}else if ($(this).hasClass("class")){
 						$.showClassPop("지출 카테고리 선택" , 'PA');
-						$("#alertModal").attr("data-type" , 'class');
+						$("#alertModal").data('type' , 'class');
 					}else{
-						$.showClassPop("지출 세부 카테고리 선택" , 'PD' ,$("input[name='cateType']").val() );
-						$("#alertModal").attr("data-type" , 'detail');
+						if ( $(".btn.class").data('id') == 0  || $(".btn.class").data('id') == undefined){ 
+							if ($("#alertModal").find(".modal-footer").length == 0 )
+								$("#alertModal > div > div").append("<div class=\"modal-footer center\" >"+alertFooterEl+"</div>");
+							$("#alertModal").modal().find('.modal-body').html("분류 카테고리를 선택해주세요");
+							return;
+						}
+						$.showClassPop("지출 세부 카테고리 선택" , 'PD' , $(".btn.class").data('id') );
+						$("#alertModal").data('type' , 'detail');
 					}
 				}
 			}, ".col-sm-4>.btn");

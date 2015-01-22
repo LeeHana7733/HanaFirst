@@ -1,13 +1,23 @@
 $(document).ready(function(){
+	$("body").append('<div class="loadingBack"><div class="loadingImg"><img src="/resources/images/ajax-loader.gif" width="30px" height="30px"></div></div>');
 	$.ajaxSetup({
-		async: false
+		async: true,
+		beforeSend : function(xhr){
+							$(".loadingBack").show();
+							$(".loadingBack").fadeIn();
+						},
+		complete	: function(){
+						$(".loadingBack").hide(); 
+					}  
 	});
 	$.getHistInfo = function (value ,option,type) {
+		$.ajaxSetup({async: false});
 		$.post("/"+type+"/"+value, 
 				{
-					'paymentType' 	: $("input[name='paymentType']").val() ,
-					'cateType'			: $("input[name='cateType']").val(),
-					'spdType'			: $("#myModal").data("spdtype")
+					'spdPayment' 		: $(".card").data('id'),
+					'spdCategory'		: $('.class').data('id'),
+					'spdSubCategory'	: $('.datail').data('id'),
+					'spdType'				: $("#myModal").data("spdtype")
 				},
 				function(data){
 					if (type=="date")
@@ -20,6 +30,7 @@ $(document).ready(function(){
 				},
 				"json"
 		);
+		$.ajaxSetup({async: true});
 	};
 	
 	/********************************************************************************************************************
@@ -63,12 +74,16 @@ $(document).ready(function(){
 				$("input[name='spdHistory']").val(val.spdHistory);
 				$("input[name='spdMemo']").val(val.spdMemo);
 				if ($("#myModal").data("spdtype") == "IN") {
-					$("select[name='spdCategory']").html($.getCateList('select' , 'IN' , ''));
-					$("select[name='spdCategory'] > option[value='"+val.spdCategory+"']").attr("selected", "ture");
+					$("select[name='spdPayment']").html($.getCateList('select' , 'IN' , ''));
+					$("select[name='spdPayment'] > option[value='"+val.spdCategory+"']").attr("selected", "ture");
 				}else{
-					$("select[name='spdCategory']").html($.getCateList('select' , 'PA' , ''));
+					$("select[name='spdCategory']").html($.getCateList('select' , 'PA' , '')).change(function(){
+						  $("select[name='spdSubCategory']").html($.getCateList('select' , 'PD' , $(this).val()));								
+					});
 					$("select[name='spdCategory'] > option[value='"+val.spdCategory+"']").attr("selected", "ture");
-					$("select[name='spdPayment']").html($.getCateList('select' , 'CA' , ''));
+					$("select[name='spdSubCategory']").html($.getCateList('select' , 'PD' , val.spdCategory));
+					$("select[name='spdSubCategory'] > option[value='"+val.spdSubCategory+"']").attr("selected", "ture");
+					$("select[name='spdPayment']").html($.getCateList('select' , 'OUT' , ''));
 					$("select[name='spdPayment'] > option[value='"+val.spdPayment+"']").attr("selected", "ture");
 				}
 			});
@@ -84,10 +99,11 @@ $(document).ready(function(){
 	$.getHistList	=	function () {
 			$.post("/list",
 					{
-						'paymentType'	: $("input[name='paymentType']").val(),
-						'cateType'			: $("input[name='cateType']").val(),
-						'spdDate': $("#full_date").text(),
-						'spdType' : 'OUT'
+						'spdPayment'	: $(".card").data("id"),
+						'spdCategory': $(".class").data("id"),
+						'spdSubCategory': $(".detail").data("id"),
+						'spdDate'		: $("#full_date").text(),
+						'spdType' 	: 'OUT'
 					},
 					function(data){
 						var html	= "";
@@ -146,19 +162,22 @@ $(document).ready(function(){
 						cateOid  : category oid
 	********************************************************************************************************************/
 	$.getCateList	=	function(type, cateType , cateOid){
-		var html= "" ;
+		$.ajaxSetup({async: false});
+		var html= cateType=="OUT" ? "" : type=="pop"? "<button type=\"button\" class=\"btn btn-default  btn-block\" data-id=\"0\">없음</button>" : "<option value=\"0\">없음</option>";
 		$.post("/cateList" , 
-				{'cateType' : cateType , 'cateOid' : cateOid} ,
+				{'cateType' : cateType , 'cateOid' : cateOid} , 
 				function(data){
 					$.each(data.result,function(i,val){
 						if (type == "pop")
-							html	+= "<button type=\"button\" class=\"btn btn-default  btn-block\" data-payment=\""+val.cateOid+"\">"+val.cateName+"</button>";
+							html	+= "<button type=\"button\" class=\"btn btn-default  btn-block\" data-id=\""+val.cateOid+"\">"+val.cateName+"</button>";
 						else
 							html	+= "<option value=\""+val.cateOid+"\">"+val.cateName+"</option>";
-					});	
+					});	 
 				},
 				"json"
 		);
+		$.ajaxSetup({async: true});
+
 		return html;
 	};
 	
@@ -204,7 +223,7 @@ $(document).ready(function(){
 	$.showClassPop = function(title , cateType , cateOid){
 		cateOid	= cateOid == 'undefined' ? '' : cateOid;
 		$("#alertModal > div > div>.modal-header h4").text(title);
-		var html	= "<button type=\"button\" class=\"btn btn-default  btn-block\" data-payment=\"0\">전체</button>";
+		var html	= "<button type=\"button\" class=\"btn btn-default  btn-block\" data-id=''>전체</button>";
 		html		+= $.getCateList('pop' , cateType , cateOid );
 		$("#alertModal").find(".modal-body").html(html);
 		$("#alertModal").find(".modal-footer").remove();
@@ -371,7 +390,6 @@ $(document).ready(function(){
 					.data("start" , data.totalInfo.START_DATE)
 					.data("end" , data.totalInfo.END_DATE);
 					$(".main").children().remove();
-					alert (data.budgetList.length);
 					if (data.budgetList.length > 0){
 						$.each(data.budgetList, function ( i ,val){
 							$(".main").htmlAppend(val);

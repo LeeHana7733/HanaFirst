@@ -7,6 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface BaseStatsService {
-	
 	public List<HashMap<String ,String>> statsList(HashMap<String,String> map);
 }

@@ -2,28 +2,6 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="history">
-	<insert id="reg_history">
-		<!-- 지출내역 -->
-		CREATE TABLE AC_HISTORY
-		(
-			 OID VARCHAR2(255),
-			 SPD_DATE DATE, 
-			 SPD_AMOUNT NUMBER(20),
-			 SPD_HISTORY VARCHAR2(255),
-			 SPD_MEMO    VARCHAR2(255),
-			 SPD_CATEGORY VARCHAR2(255),
-			 SPD_PAYMENT  VARCHAR2(255),
-			 SPD_UPDATE_DATE DATE,
-			 SPD_CREATE_DATE DATE
-		)
-		<!-- 시퀀스 -->
-		CREATE SEQUENCE  AC_HISTORY_SEQ
-        INCREMENT BY 1
-        START WITH 1 
-        MAXVALUE 1000000
-        NOCACHE
-	</insert>
-	
 	<update id="mergeHistory"  parameterType="hist">
 		<!-- history테이블 데이터 수정 / 저장-->
 		MERGE INTO AC_HISTORY 
@@ -36,6 +14,7 @@
 				SPD_HISTORY	= #{spdHistory}, 
 				SPD_MEMO		= #{spdMemo},  
 				SPD_CATEGORY	= #{spdCategory},  
+				SPD_SUB_CATEGORY	= #{spdSubCategory},
 				SPD_PAYMENT	= #{spdPayment},
 				SPD_UPDATE_DATE = SYSDATE
 			WHERE
@@ -47,7 +26,8 @@
 				SPD_AMOUNT, 
 				SPD_HISTORY, 
 				SPD_MEMO, 
-				SPD_CATEGORY, 
+				SPD_CATEGORY,
+				SPD_SUB_CATEGORY, 
 				SPD_PAYMENT, 
 				SPD_UPDATE_DATE, 
 				SPD_CREATE_DATE,
@@ -60,7 +40,8 @@
 				${spdAmount},
 				#{spdHistory}, 
 				#{spdMemo}, 
-				#{spdCategory}, 
+				#{spdCategory , jdbcType=VARCHAR},
+				#{spdSubCategory, jdbcType=VARCHAR}, 
 				#{spdPayment}, 
 				SYSDATE, 
 				SYSDATE,
@@ -81,7 +62,8 @@
 					SPD_AMOUNT, 
 					SPD_HISTORY, 
 					SPD_MEMO, 
-					SPD_CATEGORY, 
+					SPD_CATEGORY,
+					SPD_SUB_CATEGORY, 
 					SPD_PAYMENT
 		FROM		AC_HISTORY	
 		WHERE  	1=1
@@ -93,11 +75,14 @@
 				AND	SPD_DATE	 = 	TO_DATE(#{value} , 'YYYY-MM-DD') 
 			</when>
 		</choose>
-		<if test="paymentType != '0'.toString()">
-				AND	SPD_PAYMENT	=	#{paymentType} 
+		<if test="spdPayment != '0'.toString()">
+				AND	SPD_PAYMENT	=	#{spdPayment} 
 		</if>
-		<if test="cateType != '0'.toString()">
-				AND	SPD_CATEGORY	=	#{cateType} 
+		<if test="spdCategory != ''">
+				AND	SPD_CATEGORY	=	#{spdCategory} 
+		</if>
+		<if test="spdSubCategory != ''">
+				AND	SPD_SUB_CATEGORY	=	#{spdSubCategory} 
 		</if>
 		<choose>
 			<when test="spdType eq 'IN'">
@@ -122,11 +107,14 @@
 	           		AC_HISTORY  B
 		WHERE	TO_CHAR(A.TOTAL_DT ,'YYYYMMDD') = TO_CHAR(B.SPD_DATE(+) , 'YYYYMMDD')
 		]]>
-		<if test="paymentType != '0'.toString()">
-			AND	B.SPD_PAYMENT(+)	= #{paymentType}
+		<if test="spdPayment != '0'.toString() ">
+			AND	B.SPD_PAYMENT(+)	= #{spdPayment}
 		</if>
-		<if test="cateType != '0'.toString()">
-			AND	B.SPD_CATEGORY(+)=	#{cateType} 
+		<if test="spdCategory != ''">
+			AND	B.SPD_CATEGORY(+)=	#{spdCategory} 
+		</if>
+		<if test="spdSubCategory != ''">
+			AND	B.SPD_SUB_CATEGORY(+)=	#{spdSubCategory} 
 		</if>
 		AND	B.SPD_TYPE(+) = 'OUT'
 		GROUP BY TOTAL_DT
@@ -135,13 +123,13 @@
 	
 	<select id="historyInList" parameterType="hist" resultType="hashmap">
 		<![CDATA[
-		SELECT	TO_CHAR(SPD_DATE , 'yyyy-mm-dd') SPD_DATE,
-					SPD_AMOUNT,
-					SPD_MEMO,
-					SPD_HISTORY,
-					OID
-		FROM		AC_HISTORY
-		WHERE 	1=1
+			SELECT	TO_CHAR(SPD_DATE , 'yyyy-mm-dd') SPD_DATE,
+						SPD_AMOUNT,
+						SPD_MEMO,
+						SPD_HISTORY,
+						OID
+			FROM		AC_HISTORY
+			WHERE 	1=1
 		]]>	
 		AND	TRUNC(SPD_DATE,'MM')	=	TRUNC(TO_DATE(#{spdDate} , 'yyyy-mm-dd'),'MM')
 		AND	SPD_TYPE = 'IN'
@@ -174,11 +162,14 @@
 													</otherwise>
 												</choose>
 											</where>
-											<if test="paymentType != '0'.toString()">
-												AND	SPD_PAYMENT		= #{paymentType}
+											<if test="spdPayment != '0'.toString()">
+												AND	SPD_PAYMENT		= #{spdPayment}
 											</if>
-											<if test="cateType != '0'.toString()">
-												AND	SPD_CATEGORY	=	#{cateType} 
+											<if test="spdCategory != ''">
+												AND	SPD_CATEGORY	=	#{spdCategory} 
+											</if>
+											<if test="spdSubCategory != ''">
+												AND	SPD_SUB_CATEGORY	=	#{spdSubCategory} 
 											</if>
 		                					
 		                				)
